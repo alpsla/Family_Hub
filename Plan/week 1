@@ -1,0 +1,37 @@
+const week1Plan = {
+  day1: {
+    tasks: [
+      "Project structure setup",
+      "Core configurations",
+      "Basic routing"
+    ]
+  },
+  day2: {
+    tasks: [
+      "Authentication setup",
+      "Basic user context",
+      "Protected routes"
+    ]
+  },
+  day3: {
+    tasks: [
+      "Theme system",
+      "Responsive layout",
+      "Navigation structure"
+    ]
+  },
+  day4: {
+    tasks: [
+      "i18n setup",
+      "Basic privacy components",
+      "Error handling"
+    ]
+  },
+  day5: {
+    tasks: [
+      "State management",
+      "API service structure",
+      "Testing setup"
+    ]
+  }
+}

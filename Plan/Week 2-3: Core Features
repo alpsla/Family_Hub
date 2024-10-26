@@ -1,0 +1,34 @@
+const featuresPlan = {
+  dashboard: {
+    priority: 1,
+    components: [
+      "Family overview",
+      "Quick actions",
+      "Activity feed"
+    ]
+  },
+  familyMembers: {
+    priority: 2,
+    components: [
+      "Member profiles",
+      "Health info",
+      "Relationships"
+    ]
+  },
+  calendar: {
+    priority: 3,
+    components: [
+      "Monthly view",
+      "Event management",
+      "Reminders"
+    ]
+  },
+  health: {
+    priority: 4,
+    components: [
+      "Health records",
+      "Medications",
+      "Appointments"
+    ]
+  }
+}
