@@ -1,6 +1,6 @@
 // src/components/privacy/ConsentOverlay.tsx
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../core/hooks/useAuth';
+import { useAuth } from '../../../hooks/useAuth';
 import { usePrivacy } from '../../core/hooks/usePrivacy';
 import { consentManager } from '../../core/services/privacy/ConsentManagementService';
 import { FamilyMember } from '../../core/types/family';

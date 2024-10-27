@@ -1,24 +1,32 @@
-import { lazy } from 'react';
+// src/core/config/routeConfig.ts
+import { ComponentType, LazyExoticComponent, lazy } from 'react';
 
-export const routes = {
-  dashboard: {
+export interface RouteDefinition {
+  path: string;
+  component: LazyExoticComponent<ComponentType>;
+  public?: boolean;
+}
+
+export const routes: RouteDefinition[] = [
+  {
+    path: '/login',
+    component: lazy(() => import('../../pages/LoginPage')),
+    public: true
+  },
+  {
     path: '/',
-    label: 'Dashboard',
-    component: lazy(() => import('../../features/dashboard/pages/Dashboard.tsx'))
+    component: lazy(() => import('../../features/dashboard/pages/Dashboard'))
   },
-  members: {
+  {
     path: '/members',
-    label: 'Members',
-    component: lazy(() => import('../../features/members/pages/Members.tsx'))
+    component: lazy(() => import('../../features/members/pages/Members'))
   },
-  calendar: {
+  {
     path: '/calendar',
-    label: 'Calendar',
     component: lazy(() => import('../../features/calendar/pages/Calendar'))
   },
-  health: {
+  {
     path: '/health',
-    label: 'Health',
-    component: lazy(() => import('../../features/health/pages/Health.tsx'))
+    component: lazy(() => import('../../features/health/pages/Health'))
   }
-};
+];

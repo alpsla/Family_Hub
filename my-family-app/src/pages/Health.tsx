@@ -1,5 +1,6 @@
 // src/pages/Health.tsx
 import { useAuth } from '../core/hooks/useAuth';
+import { FamilyMember } from '../core/types/auth';
 
 export const Health: React.FC = () => {
   const { family } = useAuth();
@@ -15,7 +16,7 @@ export const Health: React.FC = () => {
 
       {/* Family Members Health Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {family?.members.map(member => (
+        {family?.members.map((member: FamilyMember) => (
           <div key={member.id} className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium mb-4">{member.firstName}</h3>
             <div className="space-y-2">
@@ -27,3 +28,5 @@ export const Health: React.FC = () => {
     </div>
   );
 };
+
+export default Health;

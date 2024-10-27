@@ -1,33 +1,32 @@
 // src/core/components/AppRoutes.tsx
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { Login } from '../../features/auth/components/pages/Login';
-import { ProtectedRoute } from './ProtectedRoute';
-import { routes } from '../config/routeConfig';
-import { useAuth } from '../context/AuthContext';
+import { Routes, Route } from 'react-router-dom';
+import { ProtectedRoute } from './session/ProtectedRoute';
+import { LoginPage } from '../../pages/LoginPage';
+import { Dashboard } from '../../pages/Dashboard';
+// ... other imports
 
-const AppRoutes = () => {
-  const { isAuthenticated } = useAuth();
-
+export const AppRoutes = () => {
   return (
     <Routes>
-      <Route 
-        path="/login" 
-        element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} 
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
       />
-      {Object.values(routes).map(({ path, component: Component }) => (
-        <Route
-          key={path}
-          path={path}
-          element={
-            <ProtectedRoute>
-              <Component />
-            </ProtectedRoute>
-          }
-        />
-      ))}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Other protected routes */}
+      <Route
+        path="/health"
+        element={
+          <ProtectedRoute>
+            <Health />
+          </ProtectedRoute>
+        }
+      />
+      {/* ... more routes ... */}
     </Routes>
   );
 };
-
-export default AppRoutes;
