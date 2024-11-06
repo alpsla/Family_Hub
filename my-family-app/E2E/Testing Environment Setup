@@ -1,0 +1,59 @@
+# Testing Environment Setup Guide
+
+## 1. Browser Setup
+```bash
+# Create a clean browser profile for testing
+Chrome: 
+1. Open Chrome
+2. Click Profile icon -> Add -> Create New Profile
+3. Name it "Testing Profile"
+4. Don't sync
+
+Firefox:
+1. Open Firefox
+2. Menu -> New Private Window
+```
+
+## 2. Development Tools Setup
+```bash
+# Install React Developer Tools
+1. Chrome Web Store -> React Developer Tools
+2. Firefox Add-ons -> React Developer Tools
+
+# Install Redux DevTools (if using Redux)
+1. Chrome Web Store -> Redux DevTools
+2. Firefox Add-ons -> Redux DevTools
+```
+
+## 3. Testing Database Setup
+```bash
+# Ensure test data doesn't interfere with production
+1. Create test users:
+   - test@example.com / Test123!
+   - admin@example.com / Admin123!
+   
+2. Create test families:
+   - Test Family 1 (2 members)
+   - Test Family 2 (4 members)
+```
+
+## 4. Network Testing Tools
+```bash
+# Install Postman for API testing
+1. Download Postman
+2. Create a new collection "Family Hub Tests"
+3. Set up environment variables:
+   - baseUrl: http://localhost:xxxx
+   - authToken: (to be filled after login)
+```
+
+## 5. Mobile Testing Setup
+```bash
+# Browser Developer Tools Mobile Emulation
+1. Open DevTools (F12)
+2. Toggle Device Toolbar (Ctrl+Shift+M)
+3. Select different devices:
+   - iPhone 12 Pro
+   - iPad
+   - Samsung Galaxy
+```

@@ -1,26 +1,39 @@
-// src/test/setup.ts
+import { afterEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { expect, afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
-// Extend Vitest's expect method
-expect.extend({});
-
-// Cleanup after each test
+// After each test, cleanup any rendered components
 afterEach(() => {
   cleanup();
 });
 
-// Mock localStorage and sessionStorage
-const storageMock = () => {
-  let storage: Record<string, string> = {};
-  return {
-    getItem: (key: string) => storage[key] || null,
-    setItem: (key: string, value: string) => { storage[key] = value.toString(); },
-    removeItem: (key: string) => { delete storage[key]; },
-    clear: () => { storage = {}; },
-  };
+Object.defineProperty(window, 'matchMedia', {
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }),
+});
+
+// Convert var to const
+const originalError = console.error;
+const originalWarn = console.warn;
+
+console.error = (...args) => {
+  if (/Warning.*not wrapped in act/.test(args[0])) {
+    return;
+  }
+  originalError.call(console, ...args);
 };
 
-Object.defineProperty(window, 'localStorage', { value: storageMock() });
-Object.defineProperty(window, 'sessionStorage', { value: storageMock() });
+console.warn = (...args) => {
+  if (/Warning.*not wrapped in act/.test(args[0])) {
+    return;
+  }
+  originalWarn.call(console, ...args);
+};

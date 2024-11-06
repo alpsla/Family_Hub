@@ -1,9 +1,28 @@
 // src/core/hooks/__tests__/usePasswordRecovery.test.tsx
-import { describe, it, expect, vi } from 'vitest';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
 import { usePasswordRecovery } from '../usePasswordRecovery';
+import { PasswordService } from '../../services/auth/passwordService';
 
-describe('usePasswordRecovery', () => {
+// Mock PasswordService
+vi.mock('../../services/auth/passwordService', () => ({
+  PasswordService: {
+    requestPasswordReset: vi.fn().mockResolvedValue({ 
+      success: true, 
+      message: 'Password reset email sent' 
+    }),
+    resetPassword: vi.fn().mockResolvedValue({ 
+      success: true, 
+      message: 'Password reset successful' 
+    })
+  }
+}));
+
+describe('usePasswordRecovery Hook', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should initialize with default state', () => {
     const { result } = renderHook(() => usePasswordRecovery());
     
@@ -20,30 +39,38 @@ describe('usePasswordRecovery', () => {
       await result.current.requestReset('test@example.com');
     });
 
+    expect(PasswordService.requestPasswordReset).toHaveBeenCalledWith('test@example.com');
     expect(result.current.success).toBe(true);
     expect(result.current.error).toBeNull();
-    expect(result.current.message).toBeDefined();
   });
 
-  it('should handle successful password reset', async () => {
+  it('should handle error in password reset request', async () => {
+    vi.mocked(PasswordService.requestPasswordReset).mockRejectedValueOnce(
+      new Error('API Error')
+    );
+
     const { result } = renderHook(() => usePasswordRecovery());
 
     await act(async () => {
-      await result.current.resetPassword('valid-token', 'newPassword123!');
+      try {
+        await result.current.requestReset('test@example.com');
+      } catch {
+        // Error expected
+      }
     });
 
-    expect(result.current.success).toBe(true);
-    expect(result.current.error).toBeNull();
-    expect(result.current.message).toBeDefined();
+    expect(result.current.error).toBe('Failed to request password reset. Please try again.');
+    expect(result.current.success).toBe(false);
   });
 
-  it('should manage loading state during operations', async () => {
+  it('should handle loading state', async () => {
     const { result } = renderHook(() => usePasswordRecovery());
 
+    let promise: Promise<void>;
     await act(async () => {
-      const resetPromise = result.current.requestReset('test@example.com');
+      promise = result.current.requestReset('test@example.com');
       expect(result.current.isLoading).toBe(true);
-      await resetPromise;
+      await promise;
     });
 
     expect(result.current.isLoading).toBe(false);

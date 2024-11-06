@@ -1,0 +1,89 @@
+# E2E Test Plans
+
+## 1. Authentication & Session Tests
+
+### Login Flow
+```markdown
+Test Case: Basic Login
+Steps:
+1. Navigate to /login
+2. Enter credentials:
+   - Email: parent@test.com
+   - Password: Parent123!
+3. Click "Sign In"
+Expected:
+- Redirect to dashboard
+- User info displayed
+- Session stored
+
+Test Case: Remember Me
+Steps:
+1. Login with "Remember Me" checked
+2. Close browser
+3. Reopen application
+Expected:
+- Still logged in
+- Session restored
+
+Test Case: Password Recovery
+Steps:
+1. Click "Forgot Password"
+2. Enter email
+3. Submit request
+Expected:
+- Confirmation message
+- Reset email sent (mock)
+```
+
+## 2. Navigation & Routing Tests
+
+### Menu Navigation
+```markdown
+Test Case: Sidebar Navigation
+Steps:
+1. Login as parent
+2. Click each menu item:
+   - Dashboard
+   - Members
+   - Calendar
+   - Health
+Expected:
+- Proper page loading
+- URL updates
+- Content changes
+- Active menu item highlighted
+
+Test Case: Protected Routes
+Steps:
+1. Try accessing protected URLs without login
+2. Login and try again
+Expected:
+- Redirect to login when not authenticated
+- Access granted after login
+```
+
+## 3. Account Management Tests
+
+### Account Switching
+```markdown
+Test Case: Switch Between Accounts
+Steps:
+1. Login as parent
+2. Click account switcher
+3. Select different account
+4. Switch back
+Expected:
+- Proper account loaded
+- Permissions updated
+- UI reflects current account
+
+Test Case: Family Management
+Steps:
+1. Access family settings
+2. View members list
+3. Try adding member
+4. Try removing member
+Expected:
+- Proper permissions checked
+- Operations succeed/fail appropriately
+```

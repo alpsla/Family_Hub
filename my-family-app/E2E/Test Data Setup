@@ -1,0 +1,38 @@
+{
+  "testUsers": [
+    {
+      "role": "Parent",
+      "email": "parent@test.com",
+      "password": "Parent123!",
+      "familyId": "family1"
+    },
+    {
+      "role": "Child",
+      "email": "child@test.com",
+      "password": "Child123!",
+      "familyId": "family1"
+    },
+    {
+      "role": "Guardian",
+      "email": "guardian@test.com",
+      "password": "Guardian123!",
+      "familyId": "family1"
+    }
+  ],
+  "testFamilies": [
+    {
+      "id": "family1",
+      "name": "Test Family 1",
+      "members": [
+        {
+          "role": "parent",
+          "name": "Test Parent"
+        },
+        {
+          "role": "child",
+          "name": "Test Child"
+        }
+      ]
+    }
+  ]
+}

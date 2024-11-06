@@ -1,0 +1,69 @@
+# Test Scenarios Guide
+
+## 1. Authentication Testing
+
+### Login Tests
+```plaintext
+1. Valid Login:
+   - URL: /login
+   - Input: parent@test.com / Parent123!
+   - Expected: Successful login, redirect to dashboard
+
+2. Invalid Login:
+   - URL: /login
+   - Input: wrong@email.com / WrongPass123!
+   - Expected: Error message, stay on login page
+
+3. Remember Me:
+   - Steps:
+     a. Login with Remember Me checked
+     b. Close browser
+     c. Reopen site
+   - Expected: Still logged in
+```
+
+### Session Tests
+```plaintext
+1. Session Expiry:
+   - Steps:
+     a. Login successfully
+     b. Wait for session timeout
+   - Expected: Redirect to login
+
+2. Token Refresh:
+   - Steps:
+     a. Login successfully
+     b. Monitor network calls
+   - Expected: See token refresh calls
+```
+
+## 2. Family Management Testing
+
+### Create Family
+```plaintext
+1. New Family:
+   - Navigate to: Family creation
+   - Input: "Test Family Name"
+   - Expected: Family created, user added as admin
+
+2. Add Members:
+   - Navigate to: Family members
+   - Input: member details
+   - Expected: Member added, confirmation sent
+```
+
+## 3. Error Handling Tests
+```plaintext
+1. Network Error:
+   - Disable internet
+   - Perform operations
+   - Expected: Appropriate error messages
+
+2. Validation Error:
+   - Submit invalid data
+   - Expected: Clear validation messages
+
+3. Session Error:
+   - Manipulate token
+   - Expected: Proper error handling
+```

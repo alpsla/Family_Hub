@@ -1,7 +1,7 @@
 // src/core/hooks/useSession.ts
 import { useContext } from 'react';
-import { SessionContext } from '../context/SessionContext';
-import type { SessionContextType } from '../context/sessionTypes.tsx';
+import { SessionContext } from '../context/session/SessionContext.tsx';
+import type { SessionContextType } from '../context/session/sessionTypes.tsx';
 
 export function useSession(): SessionContextType {
   const context = useContext(SessionContext);

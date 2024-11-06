@@ -1,19 +1,26 @@
 // src/main.tsx
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './pages/App';
-import { ErrorBoundary } from './core/components/ErrorBoundary';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import './index.css'
 
-const container = document.getElementById('root');
-if (!container) throw new Error('Failed to find the root element');
+const mountApp = () => {
+  const rootElement = document.getElementById('root')
+  
+  if (!rootElement) {
+    throw new Error('Failed to find the root element')
+  }
 
-const root = createRoot(container);
-
-root.render(
-  <StrictMode>
-    <ErrorBoundary>
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
       <App />
-    </ErrorBoundary>
-  </StrictMode>
-);
+    </React.StrictMode>
+  )
+}
+
+// Ensure the DOM is fully loaded before mounting
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mountApp)
+} else {
+  mountApp()
+}

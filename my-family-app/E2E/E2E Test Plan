@@ -1,0 +1,168 @@
+# E2E Test Plan for Family Hub
+
+## 1. Authentication & Session Management
+
+### Login Flow
+1. **Basic Login**
+   - Navigate to login page
+   - Enter valid credentials
+   - Verify successful login
+   - Verify redirect to dashboard
+
+2. **Remember Me**
+   - Login with "Remember Me" checked
+   - Close browser
+   - Reopen application
+   - Verify still logged in
+
+3. **Session Timeout**
+   - Login to application
+   - Leave idle for session timeout period
+   - Verify proper timeout behavior
+   - Verify redirect to login
+
+4. **Invalid Login Attempts**
+   - Try incorrect password
+   - Verify error message
+   - Try invalid email format
+   - Verify validation message
+
+### Password Recovery
+1. **Request Reset**
+   - Click "Forgot Password"
+   - Enter email address
+   - Verify confirmation message
+   - Check loading states
+
+2. **Reset Flow**
+   - Click reset link (when implemented)
+   - Enter new password
+   - Verify password requirements
+   - Verify successful reset
+
+## 2. Storage Management
+
+### Local Storage
+1. **Storage Usage**
+   - Login with "Remember Me"
+   - Check localStorage for:
+     - Auth token
+     - User data
+     - Session info
+
+2. **Storage Cleanup**
+   - Logout
+   - Verify localStorage cleared
+   - Verify sessionStorage cleared
+
+## 3. Error Handling
+
+1. **Network Errors**
+   - Disable internet connection
+   - Try to login
+   - Verify error handling
+   - Verify user feedback
+
+2. **Validation Errors**
+   - Submit empty form
+   - Submit invalid email
+   - Submit weak password
+   - Verify all error messages
+
+## Test Execution Steps
+
+### Test Case: Complete Login Flow
+1. **Setup**
+   - Clear browser cache/storage
+   - Open application in fresh window
+
+2. **Basic Login Test**
+   ```
+   Email: test@example.com
+   Password: TestPassword123!
+   ```
+   - Verify:
+     - Loading indicator shows
+     - Successful login
+     - Redirect to dashboard
+     - User data displayed
+
+3. **Session Persistence**
+   - Refresh page
+   - Verify still logged in
+   - Check localStorage/sessionStorage
+
+4. **Logout Flow**
+   - Click logout
+   - Verify:
+     - Session cleared
+     - Storage cleared
+     - Redirect to login
+
+### Test Case: Password Recovery
+1. **Initialize Reset**
+   - Click "Forgot Password"
+   - Enter email
+   - Verify:
+     - Confirmation message
+     - Loading states
+     - Error handling
+
+### Test Case: Form Validation
+1. **Email Validation**
+   ```
+   Test inputs:
+   - Empty email
+   - invalid@email
+   - test@example.com
+   ```
+   - Verify error messages
+
+2. **Password Validation**
+   ```
+   Test inputs:
+   - Empty password
+   - short
+   - NoNumber
+   - noUpperCase123
+   - Valid@Password123
+   ```
+   - Verify all validation messages
+
+## Error Scenarios to Test
+
+1. **Network Issues**
+   - Disable internet
+   - Try operations
+   - Verify error handling
+
+2. **Invalid States**
+   - Expired session
+   - Invalid tokens
+   - Missing data
+
+3. **Edge Cases**
+   - Very long inputs
+   - Special characters
+   - Multiple rapid requests
+
+## Test Environment Setup
+
+1. **Browser Testing**
+   - Chrome (latest)
+   - Firefox (latest)
+   - Safari (if available)
+   - Mobile browsers
+
+2. **Device Testing**
+   - Desktop
+   - Tablet
+   - Mobile
+
+## Recording Results
+
+For each test:
+1. Document the steps taken
+2. Note any errors/issues
+3. Take screenshots of issues
+4. Record environment details

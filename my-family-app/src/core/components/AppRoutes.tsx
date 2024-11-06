@@ -1,32 +1,41 @@
-// src/core/components/AppRoutes.tsx
-import { Routes, Route } from 'react-router-dom';
-import { ProtectedRoute } from './session/ProtectedRoute';
-import { LoginPage } from '../../pages/LoginPage';
-import { Dashboard } from '../../pages/Dashboard';
-// ... other imports
+// my-family-app/src/core/components/AppRoutes.tsx
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from '../../pages/LoginPage';
+import SignupPage from '../../pages/SignupPage';
+import Dashboard from '../../features/dashboard/pages/Dashboard';
+import { ProtectedRoute } from './ProtectedRoute';
+import { useAuth } from '../hooks/useAuth';
 
-export const AppRoutes = () => {
+const AppRoutes: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+  
+  console.log('AppRoutes - isAuthenticated:', isAuthenticated); // Debug log
+
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route 
+        path="/login" 
+        element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} 
+      />
+      <Route 
+        path="/signup" 
+        element={isAuthenticated ? <Navigate to="/dashboard" /> : <SignupPage />} 
+      />
       <Route
-        path="/"
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
         }
       />
-      {/* Other protected routes */}
-      <Route
-        path="/health"
-        element={
-          <ProtectedRoute>
-            <Health />
-          </ProtectedRoute>
-        }
+      <Route 
+        path="/" 
+        element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
       />
-      {/* ... more routes ... */}
     </Routes>
   );
 };
+
+export default AppRoutes;

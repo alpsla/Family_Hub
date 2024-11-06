@@ -1,171 +1,135 @@
-// src/pages/LoginPage.tsx
-import { useState, useEffect } from 'react';
+// my-family-app/src/pages/LoginPage.tsx
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../core/hooks/useAuth';
-import { usePasswordRecovery } from '../core/hooks/usePasswordRecovery';
-import { LoginCredentials, ValidationError } from '../core/types/auth';
-import { validateEmail, validatePassword } from '../core/validation/auth';
+import { useAuth } from '../core/context/auth/useAuth';
+import { LoginCredentials } from '../core/context/auth/authTypes';
 
-export const LoginPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const { requestReset, isLoading: isPasswordResetting } = usePasswordRecovery();
-  const [isLoading, setIsLoading] = useState(false);
-  const [credentials, setCredentials] = useState<LoginCredentials>({
+const testLoginCredentials = {
+  validUser: {
+    email: 'john@example.com',
+    password: 'password123',
+    rememberMe: true
+  },
+  invalidUser: {
+    email: 'wrong@example.com',
+    password: 'wrongpassword',
+    rememberMe: false
+  }
+};
+
+const LoginPage: React.FC = () => {
+  const [formData, setFormData] = useState<LoginCredentials>({
     email: '',
     password: '',
     rememberMe: false
   });
-  const [errors, setErrors] = useState<ValidationError>({});
-  const [serverError, setServerError] = useState<string | null>(null);
+  
+  const [error, setError] = useState<string>('');
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
 
-  // Real-time validation
   useEffect(() => {
-    if (credentials.email || credentials.password) {
-      const emailErrors = validateEmail(credentials.email);
-      const passwordErrors = validatePassword(credentials.password);
-      
-      setErrors({
-        email: emailErrors,
-        password: credentials.password ? passwordErrors : undefined
-      });
+    console.log('Auth state in LoginPage:', { isAuthenticated });
+    if (isAuthenticated) {
+      console.log('Attempting navigation to dashboard');
+      navigate('/dashboard');
     }
-  }, [credentials.email, credentials.password]);
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setServerError(null);
-
-    // Final validation before submission
-    const emailErrors = validateEmail(credentials.email);
-    const passwordErrors = validatePassword(credentials.password);
-
-    if (emailErrors.length > 0 || passwordErrors.length > 0) {
-      setErrors({ email: emailErrors, password: passwordErrors });
-      return;
-    }
-
-    setIsLoading(true);
+    setError('');
+    console.log('Login attempt with:', formData);
 
     try {
-      await login(credentials);
-      navigate('/');
-    } catch {
-      setServerError('Invalid email or password');
-    } finally {
-      setIsLoading(false);
+      await login(formData);
+      console.log('Login successful, auth state:', { isAuthenticated });
+      // Force navigation after successful login
+      navigate('/dashboard', { replace: true });
+    } catch (error) {
+      console.error('Login failed:', error);
+      setError(error instanceof Error ? error.message : 'Login failed');
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!credentials.email) {
-      setErrors({
-        ...errors,
-        email: ['Please enter your email to reset password']
-      });
-      return;
-    }
-
-    try {
-      await requestReset(credentials.email);
-      setServerError(null);
-      setErrors({});
-      alert('Password reset instructions sent to your email');
-    } catch {
-      setServerError('Failed to request password reset. Please try again.');
-    }
+  const handleTestData = (isValid: boolean) => {
+    const testData = isValid ? testLoginCredentials.validUser : testLoginCredentials.invalidUser;
+    setFormData(testData);
+    console.log('Test data filled:', testData);
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  // Debug render
+  console.log('LoginPage render:', { formData, error, isAuthenticated });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-[400px] bg-white rounded-xl p-6">
-        <h1 className="text-xl font-semibold mb-6">Welcome Back</h1>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {serverError && (
-            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
-              {serverError}
-            </div>
-          )}
-
-          <div className="space-y-1.5">
-            <label htmlFor="email" className="block text-sm">
-              Email
-            </label>
+    <div className="login-page">
+      <h2>Login</h2>
+      {/* Add debug info in development */}
+      {process.env.NODE_ENV !== 'production' && (
+        <div style={{ background: '#f0f0f0', padding: '10px', marginBottom: '10px' }}>
+          <small>Debug - Auth State: {isAuthenticated ? 'Authenticated' : 'Not Authenticated'}</small>
+        </div>
+      )}
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>
             <input
-              id="email"
-              type="email"
-              required
-              value={credentials.email}
-              onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
-              placeholder="Enter your email"
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="checkbox"
+              name="rememberMe"
+              checked={formData.rememberMe}
+              onChange={handleChange}
             />
-            {errors.email?.map((error, index) => (
-              <p key={index} className="text-red-500 text-xs mt-1">{error}</p>
-            ))}
+            Remember me
+          </label>
+        </div>
+        {error && (
+          <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>
+            {error}
           </div>
+        )}
+        <button type="submit">Login</button>
 
-          <div className="space-y-1.5">
-            <label htmlFor="password" className="block text-sm">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              required
-              value={credentials.password}
-              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-              placeholder="Enter your password"
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.password?.map((error, index) => (
-              <p key={index} className="text-red-500 text-xs mt-1">{error}</p>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between pt-2">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={credentials.rememberMe}
-                onChange={(e) => setCredentials({ ...credentials, rememberMe: e.target.checked })}
-                className="w-4 h-4 border-gray-300 rounded"
-              />
-              <span className="ml-2 text-sm text-gray-600">
-                Remember me
-              </span>
-            </label>
-            <button
-              type="button"
-              onClick={handleForgotPassword}
-              disabled={isPasswordResetting}
-              className="text-sm text-blue-600 hover:underline disabled:opacity-50"
-            >
-              {isPasswordResetting ? 'Sending...' : 'Forgot password?'}
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="test-controls" style={{ marginTop: '20px' }}>
+            <button type="button" onClick={() => handleTestData(true)}>
+              Fill Valid User
+            </button>
+            <button type="button" onClick={() => handleTestData(false)}>
+              Fill Invalid User
             </button>
           </div>
-
-          <button
-            type="submit"
-            disabled={isLoading || Object.values(errors).some(e => e?.length > 0)}
-            className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Signing in...' : 'Sign In'}
-          </button>
-
-          <p className="text-sm text-center text-gray-600 mt-4">
-            Don't have an account?{' '}
-            <button
-              type="button"
-              onClick={() => navigate('/signup')}
-              className="text-blue-600 hover:underline focus:outline-none"
-            >
-              Create account
-            </button>
-          </p>
-        </form>
-      </div>
+        )}
+      </form>
     </div>
   );
 };
